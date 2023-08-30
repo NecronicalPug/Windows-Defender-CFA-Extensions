@@ -1,9 +1,7 @@
-import configparser
+from windows_toasts import Toast, WindowsToaster
 import hashlib
 import winreg
 import pandas as pd
-
-# Setup basic config. 
 
 try:  # Reading old snapshot.
     old_allowed_applications = pd.read_csv("allowed_applications.csv", header=0)
@@ -33,10 +31,7 @@ while True:
 
 allowed_applications_key.Close()  # Close the key once the data collection is done.
 
-print(invalid_applications)  # Finish up deleting invalid apps from controlled folder access.
-
-
-new_allowed_applications = pd.DataFrame(allowed_applications, columns=("Directory", "Object holding data", "Type of data", "Checksum"))
+new_allowed_applications = pd.DataFrame(allowed_applications, columns=["Directory", "Object holding data", "Type of data", "Checksum"])
 new_allowed_applications.to_csv("allowed_applications.csv", index=False)  # Store data until next cycle.
 
 modified_applications = []
@@ -49,5 +44,23 @@ for i in range(len(old_allowed_applications)):
     else:
         modified_applications.append(new_row.Directory.values[0])
 
-#  Finish up warning the user about modified applications
+toaster = WindowsToaster("Windows Defender CFA Allowed Applications")
+
+if len(invalid_applications) > 0:
+    ready_string = f"The following applications cannot be found anymore and should have their permissions revoked:\n{invalid_applications}"
+    new_toast = Toast()
+    new_toast.text_fields = [ready_string]
+    toaster.show_toast(new_toast)
+
+if len(modified_applications) > 0:
+    ready_string = f"The following applications have been found to have been modified since the last check and may need to have their permissions revoked:\n{modified_applications}"
+    new_toast = Toast()
+    new_toast.text_fields = [ready_string]
+    toaster.show_toast(new_toast)
+
+invalid_applications_df = pd.DataFrame(invalid_applications, columns=["Directory"])
+invalid_applications_df.to_csv("invalid_applications.csv", index=False)
+modified_applications_df = pd.DataFrame(modified_applications, columns=["Directory"])
+modified_applications_df.to_csv("modified_applications.csv", index=False)
+
 
