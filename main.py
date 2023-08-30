@@ -11,7 +11,7 @@ except FileNotFoundError:
 allowed_applications = []  # Creating list and opening key in advance
 allowed_applications_key = winreg.OpenKeyEx(winreg.HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access\AllowedApplications")
 invalid_applications = []
-count = 0  
+count = 0
 
 while True:
     try:
