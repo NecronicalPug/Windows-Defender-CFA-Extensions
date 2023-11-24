@@ -1,7 +1,6 @@
-# Windows Defender Extensions
-Light Python scripts made to work alongside Windows Defender.
+# Windows Defender Controlled Folder Access Extension
+Light Python script made to work alongside Windows Defender.
 
-More information about each of the scripts is available below.
 ## Allowed Applications Checker
 Used alongside Controlled Folder Access, it issues the user a warning when an application with access to protected folders has either been modified or deleted since the last time the script has been ran. 
 
