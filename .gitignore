@@ -1,2 +1,6 @@
 
 *.csv
+
+.idea/
+
+new/

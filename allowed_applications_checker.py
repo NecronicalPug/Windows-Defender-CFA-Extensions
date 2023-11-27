@@ -21,10 +21,15 @@ while True:
     try:
         with open(temp[0], "rb") as f:
             digest = hashlib.file_digest(f, "sha512").hexdigest()  # Hashing and storing content in hexadecimal
-    except FileNotFoundError:
-        invalid_applications.append(temp[0])
-        count += 1
-        continue
+    except (FileNotFoundError, PermissionError) as e:
+        if type(e) is FileNotFoundError:
+            invalid_applications.append(temp[0])
+            count += 1
+            continue
+        else:
+            count += 1
+            continue
+
     temp.append(digest)
     allowed_applications.append(temp)
     count += 1
