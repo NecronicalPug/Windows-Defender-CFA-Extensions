@@ -1,5 +1,6 @@
 # Windows Defender Controlled Folder Access Extension
 Light Python script made to work alongside Windows Defender.
+Created as a fun little side project.
 
 ## Allowed Applications Checker
 Used alongside Controlled Folder Access, it issues the user a warning when an application with access to protected folders has either been modified or deleted since the last time the script has been ran. 
