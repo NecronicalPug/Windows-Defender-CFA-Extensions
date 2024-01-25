@@ -21,3 +21,8 @@ I don't recommend making any permanent changes to the permissions, instead take 
 
 
 Registry key below for reference: "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access\AllowedApplications"
+
+
+**Example Notification:**
+
+![image](https://github.com/NecronicalPug/Windows-Defender-CFA-Extensions/assets/46400065/ef78ee7a-a26c-46f4-b8a7-1001ab55490c)
