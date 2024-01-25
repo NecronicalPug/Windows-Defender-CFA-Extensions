@@ -3,13 +3,17 @@ import hashlib
 import winreg
 import pandas as pd
 
+permissions_error = False
+command = "reg delete"
+key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\Controlled Folder Access\\AllowedApplications"
+
 try:  # Reading old snapshot.
     old_allowed_applications = pd.read_csv("allowed_applications.csv", header=0)
 except FileNotFoundError:
     old_allowed_applications = None
 
 allowed_applications = []  # Creating list and opening key in advance
-allowed_applications_key = winreg.OpenKeyEx(winreg.HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access\AllowedApplications")
+allowed_applications_key = winreg.OpenKeyEx(winreg.HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\Controlled Folder Access\\AllowedApplications", access=winreg.KEY_READ)
 invalid_applications = []
 count = 0
 
@@ -34,6 +38,13 @@ while True:
     allowed_applications.append(temp)
     count += 1
 
+with open("reg_changes.bat", "w") as f:
+    lines = []
+    for i in invalid_applications:
+        lines.append(f'{command} "{key}" /v "{i}" /f\n')
+
+    f.writelines(lines)
+
 allowed_applications_key.Close()  # Close the key once the data collection is done.
 
 new_allowed_applications = pd.DataFrame(allowed_applications, columns=["Directory", "Object holding data", "Type of data", "Checksum"])
@@ -52,7 +63,7 @@ for i in range(len(old_allowed_applications)):
 toaster = WindowsToaster("Windows Defender CFA Allowed Applications")
 
 if len(invalid_applications) > 0:
-    ready_string = f"The following applications cannot be found anymore and should have their permissions revoked:\n{invalid_applications}"
+    ready_string = (f"The following applications couldn't be found anymore and should have their permissions revoked:\n{invalid_applications}")
     new_toast = Toast()
     new_toast.text_fields = [ready_string]
     toaster.show_toast(new_toast)
